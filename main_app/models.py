@@ -8,7 +8,6 @@ MEALS = (
   ('D', 'Dinner'),
 )
 
-
 # Create your models here.
 class Toy(models.Model):
   name = models.CharField(max_length=50)
@@ -26,6 +25,9 @@ class Cat(models.Model):
   breed = models.CharField(max_length=100)
   description = models.TextField(max_length=250)
   age = models.IntegerField()
+  # Adding the M:M relationship with the Toy model
+  # toys is the Related Manager
+  toys = models.ManyToManyField(Toy)
 
   # Changing this instance method
   # does not impact the database, therefore
