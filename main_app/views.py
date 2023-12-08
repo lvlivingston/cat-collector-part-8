@@ -18,12 +18,19 @@ def cats_index(request):
   })
 
 def cats_detail(request, cat_id):
-  cat = Cat.objects.get(id=cat_id)
-  # instantiate FeedingForm to be rendered in detail.html
-  feeding_form = FeedingForm()
-  return render(request, 'cats/detail.html', {
-    'cat': cat, 'feeding_form': feeding_form
-  })
+    cat = Cat.objects.get(id=cat_id)
+    # Get the toys the cat doesn't have...
+    # First, create a list of the toy ids that the cat DOES have
+    id_list = cat.toys.all().values_list('id')
+    # Now we can query for toys whose ids are not in the cat's list in order to use exclude() method vs. filter() method
+    toys_cat_doesnt_have = Toy.objects.exclude(id__in=id_list)
+    feeding_form = FeedingForm()
+    return render(request, 'cats/detail.html', {
+        'cat': cat, 
+        'feeding_form': feeding_form,
+        # Add the toys to be displayed
+        'toys': toys_cat_doesnt_have
+    })
 
 class CatCreate(CreateView):
   model = Cat
