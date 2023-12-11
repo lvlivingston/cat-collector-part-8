@@ -108,3 +108,6 @@ def add_photo(request, cat_id):
             print('An error occurred uploading file to S3')
             print(e)
     return redirect('detail', cat_id=cat_id)
+
+print(os.environ['S3_BUCKET'])
+print(os.environ['S3_BASE_URL'])
