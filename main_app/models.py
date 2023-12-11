@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from datetime import date
+from django.contrib.auth.models import User
 
 
 MEALS = (
@@ -30,7 +31,8 @@ class Cat(models.Model):
   # Adding the M:M relationship with the Toy model
   # toys is the Related Manager
   toys = models.ManyToManyField(Toy)
-
+  # made a foreign key for the cat (user_id FK column)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
   # Changing this instance method
   # does not impact the database, therefore
   # no makemigrations is necessary
