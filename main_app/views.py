@@ -4,8 +4,10 @@ import boto3
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .forms import FeedingForm
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 from .models import Cat, Toy, Photo
+from .forms import FeedingForm
 
 # Create your views here.
 def home(request):
@@ -117,5 +119,22 @@ def add_photo(request, cat_id):
             print(e)
     return redirect('detail', cat_id=cat_id)
 
-print(os.environ['S3_BUCKET'])
-print(os.environ['S3_BASE_URL'])
+
+def signup(request):
+  error_message = ''
+  if request.method == 'POST':
+    # This is how to create a 'user' form object
+    # that includes the data from the browser
+    form = UserCreationForm(request.POST)
+    if form.is_valid():
+      # This will add the user to the database
+      user = form.save()
+      # This is how we log a user in via code
+      login(request, user)
+      return redirect('index')
+    else:
+      error_message = 'Invalid sign up - try again'
+  # A bad POST or a GET request, so render signup.html with an empty form
+  form = UserCreationForm()
+  context = {'form': form, 'error_message': error_message}
+  return render(request, 'registration/signup.html', context)
